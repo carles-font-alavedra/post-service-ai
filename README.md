@@ -88,11 +88,43 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 
 ---
 
-## Limits and next steps
+## Limits
 
-- **Draft-only by design.** Every reply needed a human. With today's models, the next step would be letting the AI answer the safest query types on its own, with explicit rules for escalation to a person.
-- **Web chatbot (planned).** The next phase was a chatbot on the website so customers could solve common questions (assembly, order status, FAQ) on their own, before a ticket is opened.
+- **Draft-only by design.** In 2024 every reply needed a human, so the AI saved writing time but never closed a ticket on its own.
+- **Approximate measurement.** The ~5× figure is an estimate, not a controlled before/after study.
+- **Web chatbot never shipped.** The next phase was a chatbot on the website so customers could solve common questions on their own, before a ticket is opened.
 - **No public code.** The system is internal and built in n8n, so this repository documents the design and results only.
+
+---
+
+## What I'd do today
+
+*Why it matters:* models are now reliable enough to close the simple tickets on their own. The question is no longer "can the AI write a good draft?" but "which tickets can it close safely, and how do we prove it?". I would rebuild the system around that question.
+
+| Then (2024) | Today |
+|---|---|
+| Every reply drafted, every reply reviewed | AI closes safe query types on its own; humans review only what the rules send them |
+| Escalation decided case by case by the agent | **Explicit escalation rules** in a config file: low confidence or weak sources, refunds above a threshold, safety or legal topics, angry customer, B2B or public-sector account, customer asks for a person |
+| Retrieval with default settings | **Hybrid search** (keywords + embeddings) and every answer **cites its sources** |
+| Retention call designed by hand | The draft **suggests keep-instead-of-return** (partial refund or spare part) when the policy allows it, with a call script for the agent |
+| Support only by email and phone | **Web chatbot** for self-service (assembly, FAQ, order status) that opens a ticket when it cannot help |
+| Impact estimated | **Evaluation set** of labelled queries, run on every change |
+
+**How I'd measure it**
+
+| Metric | What it tells you |
+|---|---|
+| Classification accuracy / F1 per query type | Whether tickets reach the right flow |
+| Drafts approved without edits | How much work the AI really removes |
+| Tickets closed without a person | The real capacity gain |
+| Missed escalations | The dangerous error: a case that needed a person and did not get one |
+| Unnecessary escalations | The costly error: work sent to people for nothing |
+| Answer faithfulness to sources | Whether the AI invents policy |
+| Cost and latency per ticket | Whether it scales with the budget |
+
+**Rollout:** start in draft mode for every type, switch a type to automatic only when its approved-without-edits rate and missed-escalation rate pass a threshold, and keep a person on everything involving money, safety or key accounts.
+
+---
 
 ## Stack
 
