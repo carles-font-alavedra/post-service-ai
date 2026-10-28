@@ -5,11 +5,11 @@ Case study of the AI after-sales operation I designed and built from scratch at 
 **Why.** Robotix sells through many channels at once: private schools (B2B), families (B2C), public-sector contracts and large retail chains. Every channel generates after-sales questions about orders, returns, warranty, faults, assembly and invoices, by email and by phone. As sales grew, the support team could not keep up: **too many tickets and response times too slow**. The goal was to absorb that growth without hiring at the same rate, while keeping every answer under human control.
 
 ```
-customer (email / phone) ─► Zendesk ticket ─► n8n workflow
+customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
                                                  ├─► classify the query (type, channel)
                                                  ├─► retrieve from internal docs (RAG)
                                                  ├─► draft a reply
-                                                 └─► route ─► human reviews, edits, sends
+                                                 └─► route ─► human reviews the draft (internal note), edits, sends
 ```
 
 > This repository contains **no code**. The real system is internal to the company and was built in n8n. This page explains what I designed, the decisions behind it and the outcome. It uses no internal data or documents.
@@ -21,7 +21,7 @@ customer (email / phone) ─► Zendesk ticket ─► n8n workflow
 | [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | One way of working across B2B, B2C, public sector and retail |
 | [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; built the pricing model and budget to scale AI support | Kept current logistics providers; chose a repair centre in Madrid |
 | [3. AI pipeline](#3-ai-pipeline) | RAG in n8n on top of Zendesk: classify, draft, route | Human always in the loop |
-| [4. Outcome](#4-outcome) | Measured cases handled per person, before and after | **~5× more cases resolved per person** |
+| [4. Outcome](#4-outcome) | Estimated cases handled per person, before and after | **~5× more cases resolved per person** |
 | [5. Unified version history](#5-unified-version-history) | Led front-end and back-end of a password-protected, on-premise tool merging the commits of several software vendors | One shared history; each vendor sees only its own work |
 
 ---
@@ -55,12 +55,13 @@ customer (email / phone) ─► Zendesk ticket ─► n8n workflow
 *Why it matters:* most tickets are repetitive and the answer is already in internal documents. An AI that finds that answer and writes the first draft removes most of the manual work, while a person keeps the final word.
 
 **What I built**
-- **Zendesk** as the CRM: every email and phone case becomes a ticket.
+- **Zendesk** as the CRM: every email becomes a ticket. Phone calls reached an automated message that sent callers to the web form, so they also became tickets and nothing stayed off the record.
 - **n8n** workflows on each new ticket:
   1. **Classify** the query by type.
-  2. **Retrieve** the relevant passages with **RAG** over internal documents: product documentation and the company's operating procedures.
-  3. **Draft** a reply for the agent.
+  2. **Retrieve** the relevant passages with **RAG** over internal documents in **Google Drive**: product documentation and the company's operating procedures.
+  3. **Draft** a reply with **GPT-4** and post it as an **internal note** on the Zendesk ticket, so the agent works where they already work.
   4. **Route** the ticket to the right person.
+- **Model choice.** I compared the LLM providers available at the time; OpenAI's GPT-4 gave the best answers, so we used it.
 - **Human in the loop, always.** In 2024 language models were not reliable enough to reply to customers on their own, so the AI never sent anything: a person reviewed, edited and sent every reply.
 
 ---
@@ -71,7 +72,7 @@ customer (email / phone) ─► Zendesk ticket ─► n8n workflow
 
 | Metric | Result |
 |---|---|
-| Cases resolved per person | **~5× more** than before the AI pipeline |
+| Cases resolved per person | **~5× more** than before the AI pipeline (approximate estimate) |
 | Replies sent without human review | 0, by design |
 
 ---
@@ -81,7 +82,7 @@ customer (email / phone) ─► Zendesk ticket ─► n8n workflow
 *Why it matters:* the company's software was built by several external vendors, each committing in its own way, and there was no single history of what had changed. Without it, nobody in the company could follow the work or trace a problem back to a change.
 
 **What I did**
-- Led the **front-end and back-end** of an internal tool that merged every vendor's changes into **one version history**.
+- Led the **front-end and back-end** of an internal web app that merged every vendor's changes into **one version history**.
 - Hosted it on a **local, password-protected server**.
 - **Compartmentalised access:** the company could follow everything that was happening, while each vendor only saw its own work and never the others'.
 
@@ -95,7 +96,7 @@ customer (email / phone) ─► Zendesk ticket ─► n8n workflow
 
 ## Stack
 
-Zendesk · n8n · LLM with retrieval-augmented generation (RAG) over internal documentation
+Zendesk · n8n · GPT-4 · RAG over internal documentation in Google Drive · custom web app (version history)
 
 ## Author
 
