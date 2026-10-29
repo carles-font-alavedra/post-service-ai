@@ -23,7 +23,7 @@ flowchart LR
 | Block | What I did | Outcome |
 |---|---|---|
 | [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | Every query type with an owner, a protocol and a reply template |
-| [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; built the pricing model and budget to scale AI support | Kept current logistics providers; chose a repair centre in Madrid |
+| [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; negotiated their pricing | Kept current logistics providers; chose a repair centre in Madrid |
 | [3. AI pipeline](#3-ai-pipeline) | RAG in n8n on top of Zendesk: classify, draft, route | Human always in the loop |
 | [4. Outcome](#4-outcome) | Estimated cases resolved per person, before and after | **~5× more cases resolved per person** |
 
@@ -49,7 +49,7 @@ flowchart LR
 **What I did**
 - Compared **logistics providers** and **product repair centres** for the cases that needed a repair, on four criteria: **strategy, contracts, legal requirements and price**.
 - Decision: keep the logistics providers already in place for shipments, and use a **repair centre in Madrid**.
-- Built the **pricing model and budget** to scale support with AI.
+- Negotiated the **pricing** with the providers: the repair centre charged a **fee per repaired unit plus shipping costs**.
 
 ---
 
