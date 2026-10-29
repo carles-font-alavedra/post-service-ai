@@ -1,6 +1,6 @@
 # AI After-Sales Support at an Educational-Robotics Startup
 
-Case study of the AI after-sales operation I designed and built from scratch at **Robotix**, a startup that sells electronic, LEGO-style robotics kits for children. I worked there as **AI Engineer** from 09/2024 to 07/2025, as the only person on this project, reporting to the **CEO and COO**.
+Case study of the AI after-sales operation I designed from scratch and prototyped at **Robotix**, a ~50-person startup that sells electronic, LEGO-style robotics kits for children. I worked there as **AI Engineer** from 09/2024 to 07/2025, reporting to the **CEO and COO**.
 
 **Why.** Robotix sells through many channels at once: private schools (B2B), families (B2C), public-sector contracts and large retail chains. Every channel generates after-sales questions about orders, returns, warranty, faults, assembly and invoices, by email and by phone. As sales grew, the support team could not keep up: **too many tickets and response times too slow**. The goal was to absorb that growth without hiring at the same rate, while keeping every answer under human control.
 
@@ -16,7 +16,7 @@ flowchart LR
     D -. route .-> I[Right person<br/>or partner]
 ```
 
-> This repository contains **no code**. The real system is internal to the company and was built in n8n. This page explains what I designed, the decisions behind it and the outcome. It uses no internal data or documents.
+> This repository contains **no code**. I designed the system and built a working demo of it in n8n, which is internal to the company. This page explains what I designed, the decisions behind it and the expected impact. It uses no internal data or documents.
 
 ## Highlights
 
@@ -24,8 +24,8 @@ flowchart LR
 |---|---|---|
 | [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | Every query type with an owner, a protocol and a reply template |
 | [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; negotiated their pricing | Kept current logistics providers; chose a repair centre in Madrid |
-| [3. AI pipeline](#3-ai-pipeline) | RAG in n8n on top of Zendesk: classify, draft, route | Human always in the loop |
-| [4. Outcome](#4-outcome) | Estimated cases resolved per person, before and after | **~5× more cases resolved per person** |
+| [3. AI pipeline](#3-ai-pipeline) | Designed the pipeline (classify, retrieve, draft, route) and built a working demo in n8n | Human always in the loop |
+| [4. Expected impact](#4-expected-impact) | Estimated cases resolved per person, before and after | **~5× more cases resolved per person** (estimate) |
 
 ---
 
@@ -57,34 +57,36 @@ flowchart LR
 
 *Why it matters:* most tickets are repetitive and the answer is already in internal documents. An AI that finds that answer and writes the first draft removes most of the manual work, while a person keeps the final word.
 
-**What I built**
+**What I designed**, and built as a working demo in n8n:
 - **Zendesk** as the CRM: every email becomes a ticket. Phone calls reached an automated message that sent callers to the web form, so they also became tickets and nothing stayed off the record.
 - **n8n** workflows on each new ticket:
   1. **Classify** the query by type.
   2. **Retrieve** the relevant passages with **RAG** over internal documents in **Google Drive**: product documentation and the company's operating procedures.
   3. **Draft** a reply with **GPT-4** and post it as an **internal note** on the Zendesk ticket, so the agent works where they already work.
   4. **Route** the ticket to the right person.
-- **Model choice.** I compared the LLM providers available at the time; OpenAI's GPT-4 gave the best answers, so we used it.
-- **Human in the loop, always.** In 2024 language models were not reliable enough to reply to customers on their own, so the AI never sent anything: a person reviewed, edited and sent every reply.
+- **Model choice.** I compared the LLM providers available at the time; OpenAI's GPT-4 gave the best answers, so I chose it.
+- **Human in the loop, always.** In 2024 language models were not reliable enough to reply to customers on their own, so in the design the AI never sends anything: a person reviews, edits and sends every reply.
 
 ---
 
-## 4. Outcome
+## 4. Expected impact
 
 *Why it matters:* the target was to grow support without growing the team at the same pace.
 
-| Metric | Result |
+| Metric | Estimate |
 |---|---|
-| Cases resolved per person | **~5× more** than before the AI pipeline (approximate estimate) |
+| Cases resolved per person | **~5× more** than before the AI pipeline |
+
+The estimate comes from the presentation in which I proposed the system to the company.
 
 ---
 
 ## Limits
 
-- **Draft-only by design.** In 2024 every reply needed a human, so the AI saved writing time but never closed a ticket on its own.
-- **Approximate measurement.** The ~5× figure is an estimate, not a controlled before/after study.
-- **Web chatbot never shipped.** It was the planned next phase (see below).
-- **No public code.** The system is internal and built in n8n, so this repository documents the design and results only.
+- **Draft-only by design.** In 2024 every reply needed a human, so the AI was meant to save writing time, never to close a ticket on its own.
+- **Demo, not production.** I designed the system and built a working demo in n8n; this page does not describe a production rollout.
+- **Estimated impact.** The ~5× figure is an estimate from my proposal, not a measured before/after result.
+- **No public code.** The demo is internal and built in n8n, so this repository documents the design only.
 
 ---
 
