@@ -25,7 +25,7 @@ flowchart LR
 | [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | Every query type with an owner, a protocol and a reply template |
 | [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; negotiated their pricing | Kept current logistics providers; chose a repair centre in Madrid |
 | [3. AI pipeline](#3-ai-pipeline) | Designed the pipeline (classify, retrieve, draft, route) and built a working demo in n8n | Human always in the loop |
-| [4. Expected impact](#4-expected-impact) | Estimated cases resolved per person, before and after | **~5× more cases resolved per person** (estimate) |
+| [4. Expected impact](#4-expected-impact) | Estimated handling time per ticket, before and after | **~10× more tickets per agent** (estimate) |
 
 ---
 
@@ -73,11 +73,13 @@ flowchart LR
 
 *Why it matters:* the target was to grow support without growing the team at the same pace.
 
-| Metric | Estimate |
-|---|---|
-| Cases resolved per person | **~5× more** than before the AI pipeline |
+| Metric | Before | With the AI pipeline |
+|---|---|---|
+| Handling time per ticket | ~30 min | ~3 min (agent reviews and sends the AI draft) |
+| Time for 16 tickets a day | ~8 h | ~48 min |
+| Tickets per agent | 1× | **~10×** |
 
-The estimate comes from the presentation in which I proposed the system to the company.
+That is about **7 h 12 min recovered per agent per day**. These figures come from the estimate in the presentation in which I proposed the system to the company.
 
 ---
 
@@ -85,7 +87,7 @@ The estimate comes from the presentation in which I proposed the system to the c
 
 - **Draft-only by design.** In 2024 every reply needed a human, so the AI was meant to save writing time, never to close a ticket on its own.
 - **Demo, not production.** I designed the system and built a working demo in n8n; this page does not describe a production rollout.
-- **Estimated impact.** The ~5× figure is an estimate from my proposal, not a measured before/after result.
+- **Estimated impact.** The ~10× figure and both handling times are estimates from my proposal, not measured before/after results.
 - **No public code.** The demo is internal and built in n8n, so this repository documents the design only.
 
 ---
