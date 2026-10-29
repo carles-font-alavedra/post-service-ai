@@ -4,12 +4,16 @@ Case study of the AI after-sales operation I designed and built from scratch at 
 
 **Why.** Robotix sells through many channels at once: private schools (B2B), families (B2C), public-sector contracts and large retail chains. Every channel generates after-sales questions about orders, returns, warranty, faults, assembly and invoices, by email and by phone. As sales grew, the support team could not keep up: **too many tickets and response times too slow**. The goal was to absorb that growth without hiring at the same rate, while keeping every answer under human control.
 
-```
-customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
-                                                 ├─► classify the query (type, channel)
-                                                 ├─► retrieve from internal docs (RAG)
-                                                 ├─► draft a reply
-                                                 └─► route ─► human reviews the draft (internal note), edits, sends
+```mermaid
+flowchart LR
+    A[Customer<br/>email · phone → web form] --> B[Zendesk ticket]
+    B --> C[n8n workflow]
+    C --> D[Classify<br/>query type]
+    D --> E[RAG over<br/>internal docs]
+    E --> F[GPT-4 draft<br/>as internal note]
+    F --> G{{Agent reviews,<br/>edits and sends}}
+    G --> H[Customer]
+    D -. route .-> I[Right person<br/>or partner]
 ```
 
 > This repository contains **no code**. The real system is internal to the company and was built in n8n. This page explains what I designed, the decisions behind it and the outcome. It uses no internal data or documents.
@@ -18,11 +22,10 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 
 | Block | What I did | Outcome |
 |---|---|---|
-| [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | One way of working across B2B, B2C, public sector and retail |
+| [1. Support strategy](#1-support-strategy) | Customer journey, resolution protocols and operating manuals for every sales channel | Every query type with an owner, a protocol and a reply template |
 | [2. Partners & costs](#2-partners--costs) | Compared logistics providers and repair centres; built the pricing model and budget to scale AI support | Kept current logistics providers; chose a repair centre in Madrid |
 | [3. AI pipeline](#3-ai-pipeline) | RAG in n8n on top of Zendesk: classify, draft, route | Human always in the loop |
-| [4. Outcome](#4-outcome) | Estimated cases handled per person, before and after | **~5× more cases resolved per person** |
-| [5. Unified version history](#5-unified-version-history) | Led front-end and back-end of a password-protected, on-premise tool merging the commits of several software vendors | One shared history; each vendor sees only its own work |
+| [4. Outcome](#4-outcome) | Estimated cases resolved per person, before and after | **~5× more cases resolved per person** |
 
 ---
 
@@ -35,7 +38,7 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 - Defined **resolution protocols** for the six most common query types: order status, returns, warranty, technical fault, assembly, invoicing.
 - Wrote the **operating manuals**: reply templates per query type, target response times and which channel handles what.
 
-**Retention before returns.** I designed a retention step: before accepting a return, the team member in charge of returns called the customer to see whether the problem could be solved so they could keep the product. I quickly learned how those calls worked, so the protocol fitted them.
+**Retention before returns.** I designed a retention step: before accepting a return, the team member in charge of returns called the customer to see whether the problem could be solved so they could keep the product.
 
 ---
 
@@ -73,18 +76,6 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 | Metric | Result |
 |---|---|
 | Cases resolved per person | **~5× more** than before the AI pipeline (approximate estimate) |
-| Replies sent without human review | 0, by design |
-
----
-
-## 5. Unified version history
-
-*Why it matters:* the company's software was built by several external vendors, each committing in its own way, and there was no single history of what had changed. Without it, nobody in the company could follow the work or trace a problem back to a change.
-
-**What I did**
-- Led the **front-end and back-end** of an internal web app that merged every vendor's changes into **one version history**.
-- Hosted it on a **local, password-protected server**.
-- **Compartmentalised access:** the company could follow everything that was happening, while each vendor only saw its own work and never the others'.
 
 ---
 
@@ -92,7 +83,7 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 
 - **Draft-only by design.** In 2024 every reply needed a human, so the AI saved writing time but never closed a ticket on its own.
 - **Approximate measurement.** The ~5× figure is an estimate, not a controlled before/after study.
-- **Web chatbot never shipped.** The next phase was a chatbot on the website so customers could solve common questions on their own, before a ticket is opened.
+- **Web chatbot never shipped.** It was the planned next phase (see below).
 - **No public code.** The system is internal and built in n8n, so this repository documents the design and results only.
 
 ---
@@ -110,6 +101,18 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 | Support only by email and phone | **Web chatbot** for self-service (assembly, FAQ, order status) that opens a ticket when it cannot help |
 | Impact estimated | **Evaluation set** of labelled queries, run on every change |
 
+```mermaid
+flowchart LR
+    A[Email · web form · chatbot] --> B[Classify +<br/>confidence]
+    B --> C[Hybrid RAG<br/>with citations]
+    C --> D[Draft reply]
+    D --> E{Escalation<br/>rules}
+    E -- safe type, passes checks --> F[Auto-reply]
+    E -- money · safety · key account<br/>· low confidence --> G[Agent reviews]
+    F --> H[(Evaluation set<br/>+ metrics)]
+    G --> H
+```
+
 **How I'd measure it**
 
 | Metric | What it tells you |
@@ -126,9 +129,15 @@ customer (email / phone → web form) ─► Zendesk ticket ─► n8n workflow
 
 ---
 
+## Also at Robotix
+
+I led the front-end and back-end of an internal web app that merged the commits of several external software vendors into **one version history**, on a local password-protected server, so the company could follow all the work while each vendor saw only its own.
+
+---
+
 ## Stack
 
-Zendesk · n8n · GPT-4 · RAG over internal documentation in Google Drive · custom web app (version history)
+Zendesk · n8n · GPT-4 · RAG over internal documentation in Google Drive
 
 ## Author
 
